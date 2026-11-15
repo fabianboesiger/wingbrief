@@ -17,6 +17,7 @@ const el = (tag, attrs = {}, parent) => {
 const fmtNum = (v, unit) => v == null ? "–" : `${unit === "°" || unit === "%" ? Math.round(v) : (Math.abs(v) >= 100 ? Math.round(v) : v.toFixed(1))}${unit === "°" || unit === "%" ? "" : " "}${unit}`;
 const hourFmt = new Intl.DateTimeFormat("de-CH", { timeZone: TZ, hour: "2-digit", minute: "2-digit" });
 const dayFmt = new Intl.DateTimeFormat("de-CH", { timeZone: TZ, weekday: "short", day: "numeric", month: "numeric" });
+const wdFmt = new Intl.DateTimeFormat("de-CH", { timeZone: TZ, weekday: "short" });
 const localHour = (d) => Number(new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour: "2-digit", hourCycle: "h23" }).format(d));
 
 function niceTicks(lo, hi, n = 4) {
@@ -120,15 +121,27 @@ function chart(g, colorKeys, opts) {
     }
     if (localHour(d) === 12 && d.getUTCMinutes() === 0) {
       const tx = el("text", { x: X(t), y: H - 6, "text-anchor": "middle" }, axis);
-      tx.textContent = dayFmt.format(d);
+      tx.textContent = W < 520 ? wdFmt.format(d).replace(".", "") : dayFmt.format(d);
     }
   }
   // Schwellen
-  for (const t of g.thresholds) {
-    if (t.value < lo || t.value > hi) continue;
+  const visibleThr = g.thresholds.filter((t) => t.value >= lo && t.value <= hi);
+  const thrInLegend = visibleThr.length > 1;
+  for (const t of visibleThr) {
     el("line", { class: "thrline", x1: M.l, x2: W - M.r, y1: Y(t.value), y2: Y(t.value) }, svg);
+    if (thrInLegend) continue;
     const tx = el("text", { class: "thrlbl", x: W - M.r - 2, y: Y(t.value) - 3, "text-anchor": "end" }, svg);
     tx.textContent = `${t.label} ${fmtNum(t.value, t.unit)}`;
+  }
+  if (thrInLegend) {
+    let lg = wrap.querySelector(".lg");
+    if (!lg) { lg = document.createElement("div"); lg.className = "lg"; wrap.appendChild(lg); }
+    for (const t of visibleThr) {
+      const it = document.createElement("span");
+      it.innerHTML = '<i class="dash" style="border-color:var(--ink-2)"></i>';
+      it.append(`${t.label} ${fmtNum(t.value, t.unit)}`);
+      lg.appendChild(it);
+    }
   }
   // Jetzt
   const now = Date.now();
