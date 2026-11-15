@@ -20,7 +20,7 @@ export const STATUS = {
   neutral: { label: "kein Alarmzeichen", sym: "·" },
   guenstig: { label: "günstig", sym: "✓" },
   keine_daten: { label: "keine Daten", sym: "–" },
-  selbst_pruefen: { label: "selbst prüfen", sym: "◎" },
+  selbst_pruefen: { label: "selbst prüfen", sym: "↗" },
   trifft_zu: { label: "trifft zu", sym: "●" },
   trifft_nicht_zu: { label: "trifft nicht zu", sym: "○" },
 };
@@ -340,14 +340,16 @@ export function unitBriefView(uid, d, { focus = null } = {}) {
         return `<button class="ub-sec${x === s ? " on" : ""}${past ? " past" : ""}" data-s="${x}" aria-pressed="${x === s}">
           <i class="st-${l}">${LEVEL[l].sym}</i><span>${x === "tag" ? "Ganzer Tag" : secLabel(x)}</span><small>${secRange(x)}</small></button>`;
       };
-      const phs = (focus ? [focus, ...PH.filter((x) => x !== focus)] : PH).map((ph) => {
+      const noValleys = isRegion(uid) && !META.regions[uid].valleys.length;
+      const shown = PH.filter((ph) => !(noValleys && META.catalog.phenomena[ph].unit === "valley"));
+      const phs = (focus ? [focus, ...shown.filter((x) => x !== focus)] : shown).map((ph) => {
         const l = s === "tag" ? dayLevel(uid, d, ph) : fullLevel(uid, d, s, ph);
         return `<li><button data-ph="${ph}"><span class="lv ${l}">${LEVEL[l].sym}</span><span><b>${icon(ph, "ic ic-inline")} ${esc(phName(ph))}</b><small>${LEVEL[l].label}</small></span><span class="chev">›</span></button></li>`;
       }).join("");
       el.innerHTML = `<div class="sv-sum"><span class="pill st-${lv}">${LEVEL[lv].sym} ${LEVEL[lv].label}</span>
           <p class="ub-when">${p.rel}${p.i > 1 ? ` ${p.date}` : ""}</p></div>
         <div class="ub-secs">${[...SECS, "tag"].map(secBtn).join("")}</div>
-        <ul class="sv-list">${phs}</ul>
+        <ul class="sv-list">${phs}</ul>${noValleys ? '<p class="sv-note">Regiowind und Föhn werden pro Tal geprüft; für diese Region sind keine Täler hinterlegt.</p>' : ""}
         ${isRegion(uid) && META.regions[uid].valleys.length ? `<details class="ub-valleys"><summary>Täler (${META.regions[uid].valleys.length})</summary><ul class="sv-list">${META.regions[uid].valleys.map((v) => {
           const l = s === "tag" ? dayLevel(v, d) : unitLevel(v, d, s);
           return `<li><button data-valley="${v}"><span class="lv ${l}">${LEVEL[l].sym}</span><span><b>${esc(unitName(v))}</b><small>${LEVEL[l].label}</small></span><span class="chev">›</span></button></li>`;

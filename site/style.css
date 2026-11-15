@@ -1,16 +1,7 @@
-/* Layout: Kopf, fünf Tages-Tabs, Karte, eine Zeile Legende. Sonst nichts. */
-:root {
-  --bg: #f6f7f6; --surface: #ffffff; --surface-2: #eef0ee; --line: #dfe3df;
-  --ink: #161b19; --ink-2: #4f5753; --ink-3: #828a86; --accent: #1f6a52;
-  --land: #e7ebe8; --border: #a6b0ab;
-  --font-ui: "Public Sans", system-ui, sans-serif; --font-num: "Public Sans", system-ui, sans-serif;
-}
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #101312; --surface: #171b1a; --surface-2: #222826; --line: #2c3331; --ink: #edf1ef; --ink-2: #b6bfbb; --ink-3: #87918d; --accent: #6fcca8;
-  --land: #1e2422; --border: #4b5652; color-scheme: dark; } }
-:root[data-theme="dark"] {
-  --bg: #101312; --surface: #171b1a; --surface-2: #222826; --line: #2c3331; --ink: #edf1ef; --ink-2: #b6bfbb; --ink-3: #87918d; --accent: #6fcca8;
-  --land: #1e2422; --border: #4b5652; color-scheme: dark; }
+/* Layout: Kopf mit Logo, fünf Tages-Tabs, Karte, eine Zeile Legende. Marke «Alpenglühen». */
+:root { --bg:#faf7fa; --surface:#ffffff; --surface-2:#f1ebf2; --line:#e7dde8; --ink:#1c1426; --ink-2:#544a5f; --ink-3:#8a8095; --accent:#7c3fa6; --land:#efe8f1; --border:#ad9fb5; --shadow:rgb(90 40 110 / .08); --band:linear-gradient(180deg, #ecdcf0 0%, #f7e6ea 40%, #faf7fa 100%); --font-ui:"Inter",system-ui,sans-serif; --font-num:"Inter",system-ui,sans-serif; --font-disp:"Inter Tight","Inter",sans-serif; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#120d18; --surface:#1b1424; --surface-2:#271d33; --line:#33283f; --ink:#f3eef7; --ink-2:#c2b6cf; --ink-3:#9285a2; --accent:#c89bf0; --land:#241b2e; --border:#5a4a6b; --shadow:rgb(0 0 0 / .3); --band:linear-gradient(180deg, #33204a 0%, #24172f 45%, #120d18 100%); color-scheme:dark; } }
+:root[data-theme="dark"] { --bg:#120d18; --surface:#1b1424; --surface-2:#271d33; --line:#33283f; --ink:#f3eef7; --ink-2:#c2b6cf; --ink-3:#9285a2; --accent:#c89bf0; --land:#241b2e; --border:#5a4a6b; --shadow:rgb(0 0 0 / .3); --band:linear-gradient(180deg, #33204a 0%, #24172f 45%, #120d18 100%); color-scheme:dark; }
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--ink); font: 15px/1.45 var(--font-ui); }
 .wrap { max-width: 880px; margin: 0 auto; padding-block: 14px 28px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 14px; }
@@ -26,19 +17,20 @@ header { display: flex; justify-content: space-between; align-items: center; }
 /* Gemeinsame Bausteine: Statusfarben, Check-Detail, Diagramme, Tooltip.
    Jede Seite definiert die Tokens --bg --surface --surface-2 --line --ink --ink-2 --ink-3 --accent --font-ui --font-num. */
 :root {
-  --s-alarm: #d03b3b; --s-achtung: #fab219; --s-unsicher: #8a8986; --s-ok: #0ca30c; --s-keine: #c9c8c3; --on-warn: #1d1a12;
+  /* Ampel im Alpenglühen-Ton: Koralle, Apricot, Gletscher-Türkis (CVD-geprüft) */
+  --s-alarm: #d9434f; --s-achtung: #ee9b2f; --s-unsicher: #9a8fae; --s-ok: #16927f; --s-keine: #d9d2de; --on-warn: #2a1a05;
   --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a; --series-4: #eda100;
   --series-5: #e87ba4; --series-6: #008300; --series-7: #6250d6; --series-8: #e34948;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --s-keine: #4a4a46;
+    --s-keine: #3d3348;
     --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500;
     --series-5: #d55181; --series-6: #0ca30c; --series-7: #9085e9; --series-8: #e66767;
   }
 }
 :root[data-theme="dark"] {
-  --s-keine: #4a4a46;
+  --s-keine: #3d3348;
   --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500;
   --series-5: #d55181; --series-6: #0ca30c; --series-7: #9085e9; --series-8: #e66767;
 }
@@ -48,11 +40,11 @@ header { display: flex; justify-content: space-between; align-items: center; }
 .lv.alarm, .st-alarm { background: var(--s-alarm); color: #fff; }
 .lv.achtung, .st-achtung { background: var(--s-achtung); color: var(--on-warn); }
 .lv.achtung { border-radius: 5px; }
-.lv.unsicher, .st-unsicher { background: repeating-linear-gradient(45deg, var(--s-unsicher) 0 3px, var(--surface-2) 3px 6px); color: var(--ink); }
+.lv.unsicher, .st-unsicher { background: var(--s-unsicher); color: #fff; }
 .lv.ok, .st-ok, .st-guenstig { background: var(--s-ok); color: #fff; }
 .lv.keine_daten, .st-keine_daten { background: var(--s-keine); color: var(--ink-2); }
 .st-neutral { background: transparent; color: var(--ink-3); box-shadow: inset 0 0 0 1.5px var(--ink-3); }
-.st-selbst_pruefen { background: transparent; color: var(--accent); box-shadow: inset 0 0 0 1.5px var(--accent); }
+.st-selbst_pruefen { background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent); font-weight: 700; }
 .st-trifft_zu { background: var(--ink-2); color: var(--surface); }
 .st-trifft_nicht_zu { background: transparent; color: var(--ink-3); box-shadow: inset 0 0 0 1.5px var(--line); }
 .ic { width: 18px; height: 18px; flex: none; }
@@ -173,7 +165,7 @@ header { display: flex; justify-content: space-between; align-items: center; }
 .m-cell:hover, .m-cell:focus-visible { outline: none; stroke: var(--ink); stroke-width: 2; }
 .m-f-alarm { fill: color-mix(in srgb, var(--s-alarm) 72%, var(--land)); }
 .m-f-achtung { fill: color-mix(in srgb, var(--s-achtung) 78%, var(--land)); }
-.m-f-unsicher { fill: url(#m-hatch); }
+.m-f-unsicher { fill: color-mix(in srgb, var(--s-unsicher) 75%, var(--land)); }
 .m-f-ok { fill: color-mix(in srgb, var(--s-ok) 70%, var(--land)); }
 .m-f-keine_daten { fill: var(--land); }
 .m-vring { fill: none; stroke: var(--surface); stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
@@ -196,3 +188,17 @@ header { display: flex; justify-content: space-between; align-items: center; }
 .poster .al { color: var(--ink-2); }
 .levels { display: grid; gap: 8px; }
 .levels div { display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: start; }
+
+/* Marke */
+.brand { display:flex; align-items:center; gap:10px; }
+.brand svg { width:34px; height:34px; border-radius:9px; box-shadow: 0 2px 8px rgb(0 0 0 / .12); }
+.wm { font:400 22px/1 var(--font-disp); letter-spacing:-.035em; }
+.wm b { font-weight:800; }
+body { background: var(--band) no-repeat, var(--bg); background-size: 100% 300px, auto; }
+.tabs { border-bottom: 0; }
+.tabs button { font:500 15px var(--font-disp); letter-spacing:-.01em; border-bottom-width: 3px; }
+.tabs button[aria-selected="true"] { border-bottom-color: var(--accent); }
+.map { background: var(--surface); border-radius: 28px; box-shadow: 0 10px 30px var(--shadow); }
+.iconbtn { background: var(--surface); }
+.pill.st-ok, .cd-links a, .linkbtn { color: inherit; }
+.cd-links a, .linkbtn, .cd a, .poster a { color: var(--accent); }
