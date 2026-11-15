@@ -6,12 +6,14 @@
 <title>wingbrief</title>
 <meta name="description" content="Prognose-Check für Gleitschirm- und Deltapiloten nach der SHV-Meteo-Entscheidungsstrategie (Planung). Quelle: MeteoSchweiz.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;800&family=Inter:wght@400;500;600&display=swap">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<meta name="theme-color" content="#3a2f8f">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="wrap">
-  <header><div class="brand">wingbrief</div><button class="iconbtn" id="info" aria-label="Info">i</button></header>
+  <header><div class="brand" aria-label="wingbrief"><svg aria-hidden="true" viewBox="0 0 32 32"><defs><linearGradient id="g5" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a2f8f"/><stop offset=".55" stop-color="#a5479f"/><stop offset="1" stop-color="#f48a6c"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#g5)"/><path d="M0 28L9 20L13 23.5L20.5 16.5L32 26V32H0Z" fill="#2a1f5c"/><g transform="translate(15.8 12.4) rotate(-14) scale(1.2)"><path d="M-10 1.4Q0 -10 10 1.4Q0 -2.2 -10 1.4Z" fill="#fff"/><circle cx="0" cy="6.3" r="1.7" fill="#fff"/></g></svg><span class="wm">wing<b>brief</b></span></div><button class="iconbtn" id="info" aria-label="Info">i</button></header>
   <div class="tabs" role="tablist" id="tabs"></div>
   <p class="stale" id="stale" hidden></p>
   <div class="map" id="map"><p style="text-align:center;color:var(--ink-3)">Lade Prognose …</p></div>
