@@ -168,14 +168,14 @@ function mapSvg({ onlyUnit = null, points = null } = {}) {
     }
   }
   let valleys = "";
-  const showValleys = !points && (state.ph === "alle" || state.ph === "regiowind" || state.ph === "foehn");
-  if (showValleys) {
+  if (!points) {
     for (const [vid, v] of Object.entries(META.valleys)) {
-      const lv = state.ph === "alle" ? worst(["regiowind", "foehn"].map((p) => fullLevel(vid, state.day, state.sec, p))) : fullLevel(vid, state.day, state.sec, state.ph);
+      const lv = unitLevel(vid, state.day, state.sec, state.ph);
+      const n = chainCount(vid, state.day, state.sec);
       const d = "M" + v.axis.map((p) => proj(p).map((x) => x.toFixed(1)).join(",")).join("L");
       const op = onlyUnit && onlyUnit !== vid && onlyUnit !== v.region ? ' opacity="0.35"' : "";
       valleys += `<path class="valley-ring" d="${d}"${op}/><path class="valley" d="${d}" stroke="${levelColor(lv)}"${op} tabindex="0" role="link"
-        data-href="#/v/${vid}" aria-label="${esc(v.name)}: ${LEVEL[lv].label}"><title>${esc(v.name)}: ${LEVEL[lv].label}</title></path>`;
+        data-href="#/v/${vid}" aria-label="${esc(v.name)}: ${LEVEL[lv].label}, ${n} von 5 mit Alarmzeichen"><title>${esc(v.name)}: ${LEVEL[lv].label} (${n} von 5 Phänomenen mit Alarmzeichen)</title></path>`;
     }
   }
   let badges = "";
@@ -230,7 +230,7 @@ async function viewHome() {
     grid.className = "grid2";
     const left = document.createElement("div");
     left.innerHTML = `<div class="mapwrap">${mapSvg()}${legendHtml()}</div>
-      <p class="muted" style="font-size:.85rem">Flächen: Regionen (Fronten, Gewitter, überregionaler Wind). Linien: Täler (Regiowind, Föhn).
+      <p class="muted" style="font-size:.85rem">Flächen: Regionen. Linien: Täler. Farbe = schlechtestes der gewählten Phänomene. Regiowind und Föhn werden pro Tal geprüft, Fronten, Gewitter und überregionaler Wind gelten für die ganze Region.
       ${dayLabel(state.day)}, ${secLabel(state.sec)}${state.ph === "alle" ? "" : `, nur ${phName(state.ph)}`}. Antippen für Details.</p>`;
     wireMap(left);
     const right = document.createElement("div");
