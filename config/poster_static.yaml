@@ -1,0 +1,97 @@
+# Zeilen «Anreise/Bergfahrt» und «Vor Ort/im Flug» sowie Gelände und Mensch
+# aus dem SHV-Plakat V10. wingbrief prüft diese Punkte nicht mit Daten:
+# sie sind mit aktuellen Messungen und eigenen Beobachtungen zu prüfen.
+
+anreise:
+  fronten:
+    - {check: "Niederschlagsradar und -prognose", alarm: "Organisierter Niederschlag zieht in meine Richtung"}
+    - {check: "Entwicklung am westlichen Horizont", alarm: "Schnelle Wolkenbildung, Wolkenaufzug"}
+    - {check: "Wetterveränderung westlich von mir (fortgeschritten)", alarm: "Wind nimmt zu, Temperatur sinkt stark, schneller Druckanstieg"}
+    - {check: "Satellitenbild (fortgeschritten)", alarm: "Langgezogene (tiefe oder mittelhohe) Wolkenbänder ziehen in meine Richtung"}
+    - {guenstig: "Niederschlagsradar in und um die Schweiz niederschlagsfrei; keine starke Windzunahme an Messstationen westlich von mir"}
+  gewitter:
+    - {check: "Niederschlagsradar und -prognose", alarm: "Fleckiges Muster mit lokal hoher Niederschlagsintensität, Blitze"}
+    - {check: "Wolkenbild", alarm: "Castellanuswolken am Morgen, hochschiessende Quellbewölkung"}
+    - {check: "Wolkenbild (fortgeschritten)", alarm: "Flache Quellbewölkung im Zusammenhang mit einer Inversion wird punktuell durchbrochen"}
+    - {check: "Feuchtigkeits- und Temperaturmessungen (fortgeschritten)", alarm: "Schwülwarm: hohe relative Feuchte zusammen mit hohen Temperaturen"}
+    - {check: "Poor man's sounding: Temperatur an Stationen verschiedener Höhe (fortgeschritten)", alarm: "Labile Luft stösst auf Flughöhe an eine stabile Schichtung; Labilität ≥ 0.8 °C/100 m"}
+    - {guenstig: "Quellbewölkung bleibt flach/klein"}
+  regiowind:
+    - {check: "Wind an Talstationen", alarm: "Talwind bereits am Vormittag oder sprunghafte Zunahme in der letzten Stunde"}
+    - {check: "Druckdifferenzen (QFF)", alarm: "Nordüberdruck (Alpennordseite), Südüberdruck (Alpensüdseite) verstärkt Alpines Pumpen"}
+    - {check: "Wind an Talstationen (fortgeschritten)", alarm: "Stärker als gewohnt"}
+    - {check: "Windmessungen im NW (fortgeschritten)", alarm: "Zunahme der Winde aus Nordwesten (Einfliessen seichter Kaltluft)"}
+    - {check: "Druckdifferenzen (fortgeschritten)", alarm: "Leichte Föhnsituationen"}
+    - {guenstig: "Tal- und Regiowinde schwächer als gewohnt; hohe oder mittelhohe Bewölkung"}
+  wind:
+    - {check: "Wind: Entwicklung", alarm: "Zunehmend, stark, stärker als Prognose"}
+    - {check: "Wind: Böenstärke", alarm: "Grosser Unterschied zwischen Mittelwind und Böen (turbulent)"}
+    - {check: "West-Ost-Druckprognosen (fortgeschritten)", alarm: "Zunehmend"}
+    - {check: "Inversion, Niederschlag (fortgeschritten)", alarm: "Herannahender Niederschlag löst eine Inversion auf, die Höhenwinde abschirmt"}
+    - {check: "Windprofiler (fortgeschritten)", alarm: "Starker Wind greift zunehmend in tiefere Schichten durch, Messung stärker als Prognose"}
+    - {guenstig: "Allgemein schwachwindig (< 15 km/h)"}
+  foehn:
+    - {check: "Windmessungen auf Pässen am Alpenhauptkamm", alarm: "Mässiger, zunehmender Wind in meine Richtung"}
+    - {check: "Windmessungen in der Region: Stärke", alarm: "Sprunghafte Zu- und Abnahme; Föhn greift hinten im Tal oder in Nachbartälern bereits durch"}
+    - {check: "Bewölkung", alarm: "Föhnmauern, Linsenwolken, plötzliche Auflösung der Quellbewölkung, Rotorwolken"}
+    - {check: "Druckdifferenz N-S (fortgeschritten)", alarm: "Zunehmend"}
+    - {check: "Messstationen im Tal (fortgeschritten)", alarm: "Sprunghaftes Ansteigen der Temperatur und Abnehmen der relativen Feuchtigkeit"}
+    - {guenstig: "Windmessungen an typischen Föhnstationen zeigen keinen Föhn; Windrichtung am Alpenhauptkamm zeigt von mir weg (ich bin luvseitig)"}
+
+vor_ort:
+  fronten:
+    - {check: "Wolkenbild", alarm: "Heranziehende Wolkenbänder aus Westen"}
+    - {check: "Windrichtung und -stärke in der Region", alarm: "Untypisches Windmuster (stark, ungewöhnlich ruhig)"}
+    - {check: "Niederschlagsradar", alarm: "Organisierter Niederschlag mit deutlicher Vorwärtsgeschwindigkeit in der Region"}
+    - {check: "Labilität im Gebiet (fortgeschritten)", alarm: "Grossräumiges Steigen, unerwartet zunehmende Thermik, Abschattungen, Quellwolken bereits am Vormittag"}
+    - {check: "Wetterveränderung westlich von mir (fortgeschritten)", alarm: "Wind nimmt zu, Temperatur sinkt stark, schneller Druckanstieg"}
+    - {guenstig: "Niederschlagsradar in Richtung Westen niederschlagsfrei; keine starke Windzunahme an Stationen westlich von mir"}
+  gewitter:
+    - {check: "Niederschlagsradar und -prognose", alarm: "Fleckiges Muster mit lokal hoher Intensität, Blitze"}
+    - {check: "Wolkenbild", alarm: "Hochschiessende Quellwolken, Überwindung der Höheninversion, viel Schatten"}
+    - {check: "Wind in der Region", alarm: "Pulsierende/zyklische Abwinde, Dust Devils, Abwinde wegen ansaugender Thermik weiter vorne (vor allem bei Schnee)"}
+    - {check: "Gleitschirme und Vögel in der Luft", alarm: "Unruhige Flugbahnen, ungewöhnliches Steigen/Sinken"}
+    - {guenstig: "Quellbewölkung bleibt flach/klein"}
+  regiowind:
+    - {check: "Wind im Tal", alarm: "Stark"}
+    - {check: "Wind im Tal, auf angrenzenden Pässen und Voralpengipfeln", alarm: "Stark, Richtung innere Alpentäler"}
+    - {check: "Wolken in der Region (fortgeschritten)", alarm: "Verstärkte Winde aufgrund von Überentwicklungen"}
+    - {guenstig: "Regiowinde entwickeln sich gemäss der Meteo-Planung oder schwächer"}
+  wind:
+    - {check: "Wind", alarm: "Starker Wind"}
+    - {check: "Wind", alarm: "Zunehmend"}
+    - {check: "West-Ost-Druckprognosen (fortgeschritten)", alarm: "Zunehmend"}
+    - {check: "Inversion, Niederschlag (fortgeschritten)", alarm: "Herannahender Niederschlag löst eine Inversion auf"}
+    - {check: "Windprofiler (fortgeschritten)", alarm: "Starker Wind greift tiefer durch, Messung stärker als Prognose"}
+    - {guenstig: "Wind am und über dem Startplatz in gewohnter Stärke und Richtung; langsam ziehende Heissluftballone, ruhig fliegende Vögel und Piloten"}
+  foehn:
+    - {check: "Wind in der Region", alarm: "Böig, ungewöhnliche und/oder wechselnde Richtung, zunehmende Stärke"}
+    - {check: "Bewölkung", alarm: "Föhnmauern, Linsenwolken, plötzliche Auflösung der Quellbewölkung, Rotorwolken"}
+    - {check: "Sicht", alarm: "Klare Luft (Inversion verschwindet)"}
+    - {check: "Druckdifferenz N-S (fortgeschritten)", alarm: "Zunahme"}
+    - {check: "Messstationen im Tal (fortgeschritten)", alarm: "Sprunghaftes Ansteigen der Temperatur und Abnehmen der relativen Feuchtigkeit"}
+    - {check: "Wind in der Region (fortgeschritten)", alarm: "Zunahme des Talwindes oder der Bise (Contre-Föhn, Föhnbise)"}
+    - {guenstig: "Föhnstationen zeigen keinen Föhn; Wind am Alpenhauptkamm zeigt von mir weg (ich bin luvseitig)"}
+
+gelaende_mensch:
+  planung:
+    - "Habe ich Wettererfahrung mit diesem Fluggebiet?"
+    - "Startplatz: Windrichtung und -stärke? Tageszeit? Hangausrichtung?"
+    - "Flugweg: Orte mit starkem Wind (Pässe, Kreten, Talverengungen)? Luv- und Leebereiche? Thermikstärke?"
+    - "Landeplatz: Besonderheiten? Starkwindlandung?"
+    - "Selbsteinschätzung: Entspricht das Vorhaben meinen Fähigkeiten und meiner Tagesform?"
+    - "Gruppe: Wer kommt mit? Erwartungen? Rollen? Einfluss Social Media und Gruppenchats?"
+    - "Alternativen: Plan B? Wann und wo fälle ich Entscheidungen? Plan C, wenn ich nicht fliege?"
+  anreise:
+    - "Entsprechen die aktuellen Verhältnisse den Prognosen und meinen Erwartungen?"
+    - "Je näher ich dem Startplatz bin, desto schwieriger wird es, in Alternativen zu denken."
+  vor_ort:
+    - "Passt mein Plan punkto Startplatz, Flugweg und Landeplatz noch zu den aktuellen Verhältnissen?"
+    - "Landeplatz: Kann ich jederzeit landen?"
+    - "Ich fliege nicht blind anderen nach."
+    - "Sind Bauchgefühl und Verstand derselben Meinung? Ermüdung? Wahrnehmungsfallen?"
+  reflexion:
+    - "Gab es Überraschungen? Was mache ich nächstes Mal gleich oder anders? Erfahrungsaustausch?"
+
+entscheid: "Ich entscheide selber, bewusst, rechtzeitig und unabhängig von der Gruppe. Ich nehme Zweifel ernst. Ein gutes Gefühl überprüfe ich laufend mit Fakten. Ich rufe meine Alternativpläne ins Bewusstsein."
+verkettung: "Ich kombiniere zur Risikoeinschätzung alle relevanten Informationen zu Meteo, Gelände und Mensch. Wenn mehrere Faktoren kritisch sind, wird eine gefährliche Verkettung wahrscheinlicher."

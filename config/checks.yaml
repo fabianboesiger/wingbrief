@@ -1,0 +1,448 @@
+# Check-Katalog: Zeile «► PLANUNG» des SHV-Plakats «Meteo-Entscheidungsstrategie» V10.
+#
+# Felder
+#   phenomenon  fronten | gewitter | regiowind | wind | foehn
+#   stage       basis | fortgeschritten  (wie auf dem Plakat)
+#   kind        alarm      = Alarmzeichen (SHV)
+#               guenstig   = allgemein günstiges Zeichen (SHV)
+#               faktor     = Rahmenbedingung (Jahreszeit, Gelände); verschärft,
+#                            löst allein keinen Alarm aus
+#   data        A = automatisch aus Prognosedaten
+#               T = Näherung (Proxy); allein nie «keine Alarmzeichen»
+#               L = nicht offen verfügbar, selbst prüfen (Link)
+#   shv         Wortlaut Checkpunkt → Alarmzeichen (sinngemäss gekürzt)
+#   rule        wie wingbrief prüft
+#   thresholds  Zahlen mit Quelle: SHV | DHV | eigener Vorschlag
+#   ensemble    true = Tag 3–5 mit Ensemble-Konfidenz
+
+sources:
+  poster: https://www.shv-fsvl.ch/fileadmin/files/redakteure/Allgemein/Sicherheit/Sicherheit/Entscheidungsstrategie_Meteo_V10.pdf
+  pumping_map: https://www.shv-fsvl.ch/fileadmin/files/redakteure/Allgemein/Sicherheit/Sicherheit/kartealpinespumpenprint.pdf
+
+links:
+  textprognose: {label: "Textprognose MeteoSchweiz", url: "https://www.meteoschweiz.admin.ch/"}
+  bodenwetterkarte: {label: "Bodenwetterkarte (DWD)", url: "https://www.dwd.de/DE/leistungen/hobbymet_wk_europa/hobbyeuropakarten.html"}
+  previtemps: {label: "Prévitemps (SHV-App)", url: "https://www.shv-fsvl.ch/en/member-service/translate-to-englisch-shv-app/"}
+  segelflug: {label: "Segelflugprognose (skybriefing)", url: "https://www.skybriefing.com/"}
+  pumping_map: {label: "SHV-Karte «Alpines Pumpen»", url: "https://www.shv-fsvl.ch/fileadmin/files/redakteure/Allgemein/Sicherheit/Sicherheit/kartealpinespumpenprint.pdf"}
+
+phenomena:
+  fronten:
+    name: Fronten
+    unit: region
+    inhalt: Störungen in Form von Fronten, Konvergenzen und Höhentrog.
+    gefahr: Starker böiger Wind (Turbulenzen), grossflächiges Steigen, Gewitter und starke Niederschläge.
+    besonderheiten: Als Vorläufer von Kaltfronten können Squall Lines (Böenfronten) entstehen.
+  gewitter:
+    name: Wärmegewitter / Luftschichtung
+    unit: region
+    inhalt: Starke vertikale Bewegungen und Turbulenzen, bestimmt durch die Luftschichtung.
+    gefahr: Wärmegewitter (übermässiges Steigen, starke Winde) und Turbulenzen, wenn Thermik auf stabil geschichtete Luft trifft.
+    besonderheiten: Kaltluftabfliessen, labile Schicht begrenzt durch stabile Schicht, stabiles Lee, starke Subsidenz.
+  regiowind:
+    name: Regiowind
+    unit: valley
+    inhalt: Regionale Windsysteme vom Flachland ins Gebirge durch unterschiedliche tageszeitliche Erwärmung im Sommerhalbjahr.
+    gefahr: Starke (Tal-)Winde, Überströmen von Gebirgszügen (Alpines Pumpen).
+    besonderheiten: Joran, lokale Föhnerscheinungen bei Pässen, Föhnbise.
+  wind:
+    name: Überregionaler Wind
+    unit: region
+    inhalt: Westwind- (NW bis SW) oder Bisenlagen (Nord- oder Südföhn siehe Föhn).
+    gefahr: Starker Wind begünstigt turbulente Flugbedingungen.
+    besonderheiten: Herangeführte Kaltluft in Kombination mit Thermik kann besonders turbulent sein.
+  foehn:
+    name: Föhn
+    unit: valley
+    inhalt: Nord- und Südföhn (lokale, tageszeitliche Föhneffekte siehe Regiowind).
+    gefahr: Turbulenter, meist unberechenbarer Fallwind auf der Lee-Seite eines Gebirges.
+    besonderheiten: Kaltluftseen werden zunächst vom Föhn überströmt; der Föhn kann überraschend durchbrechen. Bei seichtem Föhn reicht ein luvseitiger Kaltluftsee nur wenig über Passhöhe; der Höhenwind kann dann schwach sein und jede Richtung haben.
+
+checks:
+  # ---------------------------------------------------------------- Fronten
+  F1:
+    phenomenon: fronten
+    stage: basis
+    kind: alarm
+    data: L
+    shv: "Textprognose, Radio oder Fernsehen → Front (vor allem Kaltfront, Okklusion), Störung, Kaltluft"
+    rule: "Selbst lesen. Hinweis aus dem Modell: F2 oder F6 trifft zu."
+    links: [textprognose]
+  F2:
+    phenomenon: fronten
+    stage: basis
+    kind: alarm
+    data: A
+    ensemble: true
+    shv: "Niederschlagsprognose → Organisierter Niederschlag zieht in meine Richtung"
+    rule: "Im Sektor westlich der Region (225–315°, bis 200 km) haben mindestens 40 % der Fläche ≥ 0.5 mm/h, und die Niederschlagsfläche in der Region nimmt in den folgenden 3 h zu oder ist schon ≥ 40 %."
+    thresholds:
+      rate_mm_h: {value: 0.5, source: eigener Vorschlag}
+      west_cover: {value: 0.40, source: eigener Vorschlag}
+  F3:
+    phenomenon: fronten
+    stage: basis
+    kind: alarm
+    data: A
+    shv: "Bodenwetterkarte → Fronten ziehen in meine Richtung, Westwindlage"
+    rule: "Wind auf 3000 m ü. M. aus 225–315° mit ≥ 30 km/h und zugleich Druckminimum (Trog) innerhalb ±12 h oder Niederschlag im Westsektor ≥ 20 %."
+    thresholds:
+      wind_kmh: {value: 30, source: eigener Vorschlag}
+    links: [bodenwetterkarte]
+  F4:
+    phenomenon: fronten
+    stage: fortgeschritten
+    kind: alarm
+    data: L
+    shv: "Bodenwetterkarten → Konvergenzlinien und Kurzwellentröge"
+    rule: "Noch nicht automatisch (geplant: Konvergenz des 10 m-Windes im Westsektor). Bodenwetterkarte selbst prüfen."
+    links: [bodenwetterkarte]
+  F5:
+    phenomenon: fronten
+    stage: fortgeschritten
+    kind: alarm
+    data: A
+    shv: "Modellwetter mit Symbolen → Schauer- und Gewittersymbole"
+    rule: "Blitzpotential (LPI) > 0 an einem Regionspunkt oder fleckiger Niederschlag (W3)."
+  F6:
+    phenomenon: fronten
+    stage: fortgeschritten
+    kind: alarm
+    data: A
+    shv: "Temperaturprognose → Kalte Luft bewegt sich auf mich zu"
+    rule: "Temperatur auf 1500 m ü. M. (Talpunkt der Region) mindestens 4 K tiefer als 24 h vorher."
+    thresholds:
+      drop_k: {value: 4, source: eigener Vorschlag}
+  FG:
+    phenomenon: fronten
+    stage: basis
+    kind: guenstig
+    data: A
+    ensemble: true
+    shv: "Allgemein günstig: «ausgeprägte Hochdrucklage», «stabile Wetterlage», «wenig Wind»"
+    rule: "Bodendruck (QFF) ≥ 1020 hPa, Druckdifferenzen Genf–Kloten und Lugano–Zürich < 2 hPa, Wind 10 m und 2000 m ü. M. < 15 km/h."
+    thresholds:
+      qff_hpa: {value: 1020, source: eigener Vorschlag}
+      wind_kmh: {value: 15, source: SHV}
+
+  # ------------------------------------------------- Wärmegewitter / Schichtung
+  W1:
+    phenomenon: gewitter
+    stage: basis
+    kind: alarm
+    data: L
+    shv: "Textprognose → (Wärme-/Hitze-)Gewitter, Tagesgangwetter, Schauer, Überentwicklungen"
+    rule: "Selbst lesen. Hinweis aus dem Modell: F5 oder W3 trifft zu."
+    links: [textprognose]
+  W2:
+    phenomenon: gewitter
+    stage: basis
+    kind: alarm
+    data: A
+    shv: "Bodenwetterkarte → Flache Tiefdrucklage"
+    rule: "Bodendruck (QFF) in der Region < 1015 hPa, alle Druckdifferenzen über die Schweiz < 2 hPa und Wind auf 3000 m ü. M. < 25 km/h (schwache Strömung)."
+    thresholds:
+      qff_hpa: {value: 1015, source: eigener Vorschlag}
+      grad_hpa: {value: 2, source: eigener Vorschlag}
+      wind_kmh: {value: 25, source: eigener Vorschlag}
+  W3:
+    phenomenon: gewitter
+    stage: basis
+    kind: alarm
+    data: A
+    shv: "Niederschlagsprognose → Fleckiges Muster mit lokal hoher Niederschlagsintensität"
+    rule: "In der Region (30 km um die Regionspunkte) maximal ≥ 5 mm/h, aber weniger als 30 % der Fläche mit Niederschlag."
+    thresholds:
+      max_mm_h: {value: 5, source: eigener Vorschlag}
+      cover: {value: 0.30, source: eigener Vorschlag}
+  W4:
+    phenomenon: gewitter
+    stage: basis
+    kind: alarm
+    data: T
+    shv: "Segelflugprognose → «Sehr gute Thermik» kann auf starke Turbulenzen hinweisen"
+    rule: "Näherung: CAPE (mittlere Schicht) ≥ 300 J/kg am Nachmittag. Segelflugprognose selbst prüfen."
+    thresholds:
+      cape: {value: 300, source: eigener Vorschlag}
+    links: [segelflug]
+  W5:
+    phenomenon: gewitter
+    stage: fortgeschritten
+    kind: alarm
+    data: A
+    shv: "850 hPa pseudopotentielle Temperatur in Modellkarten → Luftmasse mit hoher Energie (Temperatur und Feuchtigkeit): > 60 °C"
+    rule: "Pseudopotentielle Temperatur (Bolton) auf 850 hPa am Tal- oder Voralpenpunkt > 60 °C."
+    thresholds:
+      theta_e_c: {value: 60, source: SHV}
+  W6:
+    phenomenon: gewitter
+    stage: fortgeschritten
+    kind: alarm
+    data: A
+    shv: "Thermikprognosen → Labile Luft stösst auf Flughöhe an eine stabile Schichtung; zu hohe Labilität in Flughöhe (≥ 0.8 °C/100 m); absinkende Höheninversion"
+    rule: "Temperaturabnahme ≥ 0.8 °C/100 m in einer 500 m-Schicht zwischen 1500 und 3000 m ü. M. (mind. 300 m über Grund) mit stabiler Schicht darüber; oder Inversionsbasis sinkt um ≥ 300 m in 24 h."
+    thresholds:
+      lapse: {value: 0.8, source: SHV}
+      sink_m: {value: 300, source: eigener Vorschlag}
+  W7:
+    phenomenon: gewitter
+    stage: fortgeschritten
+    kind: alarm
+    data: L
+    shv: "Prévitemps"
+    rule: "Selbst prüfen."
+    links: [previtemps]
+  W8:
+    phenomenon: gewitter
+    stage: fortgeschritten
+    kind: alarm
+    data: A
+    shv: "Bodendruck → Starke Subsidenz (Druckzunahme)"
+    rule: "Bodendruck (QFF) steigt um ≥ 3 hPa in 24 h."
+    thresholds:
+      rise_hpa: {value: 3, source: eigener Vorschlag}
+  WG:
+    phenomenon: gewitter
+    stage: basis
+    kind: guenstig
+    data: A
+    shv: "Allgemein günstig: trockenes, sonniges Wetter; starke Höheninversionen; sehr trockene Luft am Boden und in mittleren Höhen"
+    rule: "Kein Niederschlag in der Region und (Inversion ≥ 2 K oder relative Feuchte auf 3000 m ü. M. < 40 %)."
+    thresholds:
+      inversion_k: {value: 2, source: eigener Vorschlag}
+      rh: {value: 40, source: eigener Vorschlag}
+
+  # --------------------------------------------------------------- Regiowind
+  R1:
+    phenomenon: regiowind
+    stage: basis
+    kind: alarm
+    data: L
+    shv: "Textprognose → Mässiger oder starker Talwind"
+    rule: "Selbst lesen. Hinweis aus dem Modell: R9 trifft zu."
+    links: [textprognose]
+  R2:
+    phenomenon: regiowind
+    stage: basis
+    kind: faktor
+    data: A
+    shv: "Jahres- und Tageszeit → April–Oktober, nachmittags"
+    rule: "Kalender: April–Oktober und Tagesabschnitt Nachmittag."
+  R3:
+    phenomenon: regiowind
+    stage: basis
+    kind: faktor
+    data: A
+    shv: "Topographie entlang der Flugstrecke → Grosse, lange Täler und/oder umliegende hohe Berge, Talverengungen; Abwindzone auf Flugstrecke"
+    rule: "Statische Talmerkmale: langes Tal, Talverengung."
+  R4:
+    phenomenon: regiowind
+    stage: basis
+    kind: faktor
+    data: A
+    shv: "SHV-Karte «Alpines Pumpen»"
+    rule: "Hinweise aus der Karte für dieses Tal; bei Südüberdruck (Lugano–Zürich > 1 hPa) werden einige Pässe nicht mehr überspült."
+    links: [pumping_map]
+  R5:
+    phenomenon: regiowind
+    stage: fortgeschritten
+    kind: faktor
+    data: A
+    shv: "Aktuelle Beschaffenheit der Bodenoberflächen → Oberflächen in den Alpen grösstenteils schneefrei und trocken"
+    rule: "Schneebedeckung an den Talpunkten < 20 % und Niederschlag der letzten 48 h < 2 mm."
+    thresholds:
+      snow: {value: 20, source: eigener Vorschlag}
+      precip_mm: {value: 2, source: eigener Vorschlag}
+  R6:
+    phenomenon: regiowind
+    stage: fortgeschritten
+    kind: alarm
+    data: A
+    shv: "Talwindstärke am Vortag → Starker Talwind"
+    rule: "Lokalprognose der Referenzstation für den Vortag, 12–18 Uhr: talaufwärts wehender Mittelwind ≥ Klima-P75 (Station, Monat, Stunde) und mindestens 15 km/h («stark»)."
+    thresholds:
+      pct: {value: 75, source: eigener Vorschlag}
+      min_kmh: {value: 15, source: eigener Vorschlag}
+  R7:
+    phenomenon: regiowind
+    stage: fortgeschritten
+    kind: alarm
+    data: A
+    shv: "Windprognosen 800 m über Grund → Überregionaler Wind verstärkt den Talwind: aus nördlicher (Alpennordseite) bzw. südöstlicher (Alpensüdseite) Richtung"
+    rule: "April–Oktober (thermischer Talwind): Wind 800 m über Grund an der Talmündung aus 315–45° (Nordseite) bzw. 90–180° (Südseite) mit ≥ 10 km/h. Inneralpine Täler: nicht anwendbar."
+    thresholds:
+      wind_kmh: {value: 10, source: eigener Vorschlag}
+  R8:
+    phenomenon: regiowind
+    stage: fortgeschritten
+    kind: alarm
+    data: A
+    shv: "Temperaturprognose an Talstationen → Weniger Erwärmung als erwartet (Einfliessen kalter Luft)"
+    rule: "Lokalprognose der Referenzstation: Tagesamplitude der Temperatur unter Klima-P25 (Station, Monat), April–Oktober."
+    thresholds:
+      pct: {value: 25, source: eigener Vorschlag}
+  R9:
+    phenomenon: regiowind
+    stage: fortgeschritten
+    kind: alarm
+    data: A
+    shv: "Windprognose 10 m über Grund → Verstärkte Talwinde in langen, grossen Tälern"
+    rule: "Lokalprognose der Referenzstation: talaufwärts wehender Mittelwind (±60° zur Talachse) ≥ Klima-P75 (Station, Monat, Stunde) und mindestens 10 km/h."
+    thresholds:
+      pct: {value: 75, source: eigener Vorschlag}
+      min_kmh: {value: 10, source: eigener Vorschlag}
+  R10:
+    phenomenon: regiowind
+    stage: fortgeschritten
+    kind: alarm
+    data: A
+    shv: "Prévitemps → Inversion unter der Kretenhöhe (Venturieffekt)"
+    rule: "Im Modellprofil am Talpunkt liegt eine Inversion (≥ 1 K) mit Basis mindestens 200 m über Grund und unter der Kretenhöhe."
+    thresholds:
+      inversion_k: {value: 1, source: eigener Vorschlag}
+    links: [previtemps]
+  RG:
+    phenomenon: regiowind
+    stage: basis
+    kind: guenstig
+    data: A
+    shv: "Allgemein günstig: November bis März, wenig Sonneneinstrahlung; schneebedeckte Oberfläche, nasse Böden"
+    rule: "November–März, oder Schneebedeckung ≥ 50 %, oder Niederschlag der letzten 48 h ≥ 10 mm."
+    thresholds:
+      snow: {value: 50, source: eigener Vorschlag}
+      precip_mm: {value: 10, source: eigener Vorschlag}
+
+  # ------------------------------------------------------ Überregionaler Wind
+  U1:
+    phenomenon: wind
+    stage: basis
+    kind: alarm
+    data: L
+    shv: "Textprognose → Mässiger Wind aus Westen, Nordwesten, Südwesten, Bise, Nordwind, Ostwind, böiger Wind"
+    rule: "Selbst lesen. Hinweis aus dem Modell: U2 trifft zu."
+    links: [textprognose]
+  U2:
+    phenomenon: wind
+    stage: basis
+    kind: alarm
+    data: A
+    shv: "Windprognosen auf 4000, 3000, 2000, 1500 m über Grund → zu stark"
+    rule: "Stärkster Mittelwind der vier Höhen über Grund an den Regionspunkten: Achtung ab 20 km/h, Alarm ab 30 km/h. Kanalisierendes Gelände (U4) hebt Achtung auf Alarm."
+    thresholds:
+      warn_kmh: {value: 20, source: eigener Vorschlag}
+      alarm_kmh: {value: 30, source: eigener Vorschlag}
+  U3:
+    phenomenon: wind
+    stage: basis
+    kind: alarm
+    data: A
+    shv: "Lokalprognosen für bodennahen Wind (statistisch verbessert) → zu stark"
+    rule: "Lokalprognose MeteoSchweiz an den Regionsstationen: Mittelwind ≥ 20 km/h oder Böen ≥ 40 km/h."
+    thresholds:
+      mean_kmh: {value: 20, source: eigener Vorschlag}
+      gust_kmh: {value: 40, source: eigener Vorschlag}
+  U4:
+    phenomenon: wind
+    stage: basis
+    kind: faktor
+    data: A
+    shv: "Topographie Flugregion → Geländeformen, welche überregionalen Wind kanalisieren"
+    rule: "Region kanalisiert Bise (Wind aus 30–90°) oder Westwind (225–300°), und der Wind auf 2000 m über Grund kommt aus dieser Richtung."
+  U5:
+    phenomenon: wind
+    stage: fortgeschritten
+    kind: alarm
+    data: A
+    ensemble: true
+    shv: "West-Ost-Druckprognosen → > 2 hPa, zunehmend"
+    rule: "Druckdifferenz Genf–Kloten (QFF) über 2 hPa (Betrag; negativ = Bise) und in den letzten 3 h zunehmend."
+    thresholds:
+      dp_hpa: {value: 2, source: SHV}
+  UG:
+    phenomenon: wind
+    stage: basis
+    kind: guenstig
+    data: A
+    shv: "Allgemein günstig: Hochdrucklage, allgemein schwachwindig (< 15 km/h)"
+    rule: "Bodendruck ≥ 1020 hPa und Wind in allen geprüften Höhen und am Boden < 15 km/h."
+    thresholds:
+      qff_hpa: {value: 1020, source: eigener Vorschlag}
+      wind_kmh: {value: 15, source: SHV}
+
+  # ---------------------------------------------------------------- Föhn
+  O1:
+    phenomenon: foehn
+    stage: basis
+    kind: alarm
+    data: L
+    shv: "Textprognose → Alpensüdseite: Nordföhn, Nordwind; Alpennordseite: Föhn, Südföhn, Südwind, Föhntendenz"
+    rule: "Selbst lesen. Hinweis aus dem Modell: O4 trifft zu."
+    links: [textprognose]
+  O2:
+    phenomenon: foehn
+    stage: basis
+    kind: alarm
+    data: A
+    shv: "Windprognosen 2000 m ü. M., 800 m über Grund → Föhnkanäle sichtbar"
+    rule: "An einem Talpunkt weht der Wind auf 2000 m ü. M. oder 800 m über Grund talauswärts (vom Pass her, ±45°) mit ≥ 30 km/h."
+    thresholds:
+      wind_kmh: {value: 30, source: eigener Vorschlag}
+  O3:
+    phenomenon: foehn
+    stage: basis
+    kind: alarm
+    data: A
+    shv: "Windprognosen 3000 m, 4000 m ü. M. → Wind im Alpenbogen trifft im rechten Winkel auf den Gebirgszug (trifft nicht zu für seichten Föhn!)"
+    rule: "Am Pass weht der Wind auf 3000 oder 4000 m ü. M. höchstens 30° schräg zur Kammnormalen von der Luvseite mit ≥ 30 km/h."
+    thresholds:
+      angle: {value: 30, source: eigener Vorschlag}
+      wind_kmh: {value: 30, source: eigener Vorschlag}
+  O4:
+    phenomenon: foehn
+    stage: basis
+    kind: alarm
+    data: A
+    ensemble: true
+    shv: "Druckdifferenz N-S → Ausgeprägt oder zunehmend auf der Luv-Seite"
+    rule: "Druckdifferenz Lugano–Zürich (QFF), Luv minus Lee: Alarm ab 4 hPa, Achtung ab 3 hPa oder ab 2 hPa bei Zunahme ≥ 1 hPa in 6 h."
+    thresholds:
+      warn_hpa: {value: 3, source: DHV}
+      alarm_hpa: {value: 4, source: DHV}
+      rise_hpa: {value: 1, source: eigener Vorschlag}
+  O5:
+    phenomenon: foehn
+    stage: fortgeschritten
+    kind: faktor
+    data: A
+    shv: "Jahres- und Tageszeit → Labilisierung durch tageszeitliche Erwärmung (vor allem Frühling und Sommer)"
+    rule: "März–August, Tagesabschnitt Mittag oder Nachmittag, Temperaturabnahme ≥ 0.7 °C/100 m in den unteren 1500 m am Talpunkt."
+    thresholds:
+      lapse: {value: 0.7, source: eigener Vorschlag}
+  O6:
+    phenomenon: foehn
+    stage: fortgeschritten
+    kind: faktor
+    data: A
+    shv: "Ort → Tal beginnt an einem Pass am Alpenhauptkamm"
+    rule: "Statisches Talmerkmal."
+  O7:
+    phenomenon: foehn
+    stage: fortgeschritten
+    kind: alarm
+    data: A
+    shv: "Temperaturprognose auf Passhöhe (ca. 2000 m ü. M.) → Luftmasse luvseitig auf Passhöhe und darüber kühler: ab 1–2 °C. Bei seichtem Föhn kann dieser Bereich über Passhöhe klein sein"
+    rule: "Temperatur auf ca. 2000 m ü. M. (mind. 100 m über Modellgelände) beidseits des Passes: Luv kühler als Lee um ≥ 2 °C (Alarm) bzw. ≥ 1 °C (Achtung)."
+    thresholds:
+      warn_k: {value: 1, source: SHV}
+      alarm_k: {value: 2, source: SHV}
+    links: [previtemps]
+  OG:
+    phenomenon: foehn
+    stage: basis
+    kind: guenstig
+    data: A
+    shv: "Allgemein günstig: Geplante Flugstrecke befindet sich luvseitig der Föhnströmung; keine Temperaturdifferenz über Passhöhe (oder höhere Temperatur auf der «andern» Seite der Alpen)"
+    rule: "Auf 2000 m ü. M. ist die eigene Talseite nicht mehr als 0.5 °C wärmer als die andere Seite, und die Druckdifferenz zur eigenen Seite ist < 2 hPa."
+    thresholds:
+      dt_k: {value: 0.5, source: eigener Vorschlag}
+      dp_hpa: {value: 2, source: eigener Vorschlag}

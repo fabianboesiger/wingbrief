@@ -1,0 +1,356 @@
+# Räumliche Einheiten von wingbrief.
+#
+# SHV definiert keine Regionen. Fronten, überregionaler Wind und Wärmegewitter
+# werden pro Region geprüft, Regiowind und Föhn pro Tal (SHV: «Tal beginnt an
+# einem Pass am Alpenhauptkamm», Karte «Alpines Pumpen»).
+#
+# Koordinaten: WGS84 [lat, lon]. Stationen: SwissMetNet-Kürzel (MeteoSchweiz).
+
+pressure_stations:
+  west: GVE        # Genève-Cointrin   (West-Ost-Druck, SHV)
+  east: KLO        # Zürich-Kloten     (West-Ost-Druck, SHV)
+  south: LUG       # Lugano            (Nord-Süd-Druck)
+  north: SMA       # Zürich-Fluntern   (Nord-Süd-Druck)
+
+# Passübergänge am Alpenhauptkamm (bzw. Grimsel für das Haslital).
+# north/south: Punkte ca. 15–25 km beidseits für den Temperaturvergleich auf
+# Passhöhe (ca. 2000 m ü. M., SHV). normal_from_south: Windrichtung (woher, °),
+# die senkrecht von Süden über den Kamm weht (Südföhn); +180° = Nordföhn.
+passes:
+  gsb:
+    name: Grosser St. Bernhard
+    crest: [45.869, 7.171]
+    north: [46.020, 7.200]
+    south: [45.760, 7.300]
+    normal_from_south: 160
+  simplon:
+    name: Simplon
+    crest: [46.250, 8.031]
+    north: [46.330, 8.010]
+    south: [46.160, 8.150]
+    normal_from_south: 170
+  gotthard:
+    name: Gotthard
+    crest: [46.559, 8.561]
+    north: [46.720, 8.600]
+    south: [46.450, 8.700]
+    normal_from_south: 180
+  lukmanier:
+    name: Lukmanier
+    crest: [46.563, 8.801]
+    north: [46.680, 8.850]
+    south: [46.470, 8.930]
+    normal_from_south: 180
+  sanbernardino:
+    name: San Bernardino
+    crest: [46.495, 9.170]
+    north: [46.590, 9.300]
+    south: [46.360, 9.200]
+    normal_from_south: 180
+  maloja:
+    name: Maloja
+    crest: [46.401, 9.694]
+    north: [46.480, 9.800]
+    south: [46.330, 9.560]
+    normal_from_south: 210
+  grimsel:
+    name: Grimsel
+    crest: [46.561, 8.333]
+    north: [46.680, 8.280]
+    south: [46.450, 8.250]
+    normal_from_south: 180
+
+# Regionen für die Übersicht. points: Tal, Voralpen/Mittelland, Kamm.
+# stations: für die statistisch verbesserte Lokalprognose (SHV, überregionaler Wind).
+# channels: Geländeformen, die überregionalen Wind kanalisieren (SHV).
+regions:
+  jura:
+    name: Jura
+    points: {tal: [47.360, 7.350], voralpen: [47.250, 7.500], kamm: [47.133, 7.054]}
+    stations: [DEM, CDF, CHA]
+    channels: [bise, west]
+  westmittelland:
+    name: Genferseegebiet / Westliches Mittelland
+    points: {tal: [46.230, 6.150], voralpen: [46.810, 6.940], kamm: [46.520, 6.630]}
+    stations: [GVE, PAY, PUY]
+    channels: [bise]
+  voralpen_fr_vd:
+    name: Freiburger und Waadtländer Voralpen
+    points: {tal: [46.470, 7.140], voralpen: [46.550, 7.020], kamm: [46.330, 7.200]}
+    stations: [CHD, MLS, CDM]
+    channels: []
+  bo_west:
+    name: Berner Oberland West
+    points: {tal: [46.590, 7.650], voralpen: [46.650, 7.650], kamm: [46.400, 7.530]}
+    stations: [FRU, ABO, BOL]
+    channels: []
+  bo_ost:
+    name: Berner Oberland Ost
+    points: {tal: [46.690, 7.870], voralpen: [46.660, 8.050], kamm: [46.540, 7.980]}
+    stations: [INT, MER, BRZ]
+    channels: []
+  zentralschweiz:
+    name: Zentralschweiz
+    points: {tal: [46.880, 8.640], voralpen: [47.050, 8.310], kamm: [46.979, 8.254]}
+    stations: [LUZ, ALT, ENG]
+    channels: []
+  glarus_linth:
+    name: Glarnerland / Walensee
+    points: {tal: [47.040, 9.070], voralpen: [47.150, 9.150], kamm: [46.920, 9.170]}
+    stations: [GLA, ELM, QUI]
+    channels: [west]
+  rheintal:
+    name: Rheintal / Nordbünden
+    points: {tal: [46.850, 9.530], voralpen: [47.130, 9.520], kamm: [46.970, 9.680]}
+    stations: [CHU, VAD, RAG]
+    channels: []
+  wallis:
+    name: Wallis
+    points: {tal: [46.230, 7.360], voralpen: [46.290, 7.880], kamm: [46.310, 7.480]}
+    stations: [SIO, VIS, ULR]
+    channels: [west]
+  engadin:
+    name: Engadin / Südbünden
+    points: {tal: [46.530, 9.880], voralpen: [46.800, 10.280], kamm: [46.420, 9.820]}
+    stations: [SAM, SCU, SIA]
+    channels: []
+  tessin:
+    name: Tessin
+    points: {tal: [46.170, 8.880], voralpen: [46.000, 8.960], kamm: [46.200, 8.790]}
+    stations: [LUG, MAG, PIO]
+    channels: []
+
+# Täler für Regiowind und Föhn.
+# axis: Punkte von der Talmündung zum Talende.
+# side: nord (Lee bei Südföhn), sued (Lee bei Nordföhn), inneralpin (beides möglich).
+# pass: Passübergang für den Temperaturvergleich; pass_valley: Tal beginnt an
+# einem Pass am Alpenhauptkamm (SHV, Föhn fortgeschritten).
+# crest_m: typische Kretenhöhe (SHV, Regiowind: Inversion unter Kretenhöhe).
+# station: Referenzstation für Lokalprognose und Klimatologie.
+# pumping: Hinweise aus der SHV-Karte «Alpines Pumpen».
+valleys:
+  reusstal:
+    name: Reusstal (Uri)
+    region: zentralschweiz
+    axis: [[46.900, 8.620], [46.880, 8.640], [46.770, 8.670], [46.670, 8.590]]
+    side: nord
+    pass: gotthard
+    pass_valley: true
+    crest_m: 2800
+    long_valley: true
+    narrows: true
+    station: ALT
+  engelbergertal:
+    name: Engelbergertal
+    region: zentralschweiz
+    axis: [[46.960, 8.370], [46.890, 8.400], [46.820, 8.410]]
+    side: nord
+    pass: gotthard
+    pass_valley: false
+    crest_m: 2600
+    long_valley: false
+    narrows: false
+    station: ENG
+  haslital:
+    name: Haslital
+    region: bo_ost
+    axis: [[46.750, 8.030], [46.730, 8.180], [46.710, 8.230], [46.660, 8.290]]
+    side: nord
+    pass: grimsel
+    pass_valley: false
+    crest_m: 2900
+    long_valley: true
+    narrows: true
+    station: MER
+    pumping: "Die Grimsel wird bei Alpinem Pumpen überspült; erst bei fast Föhn nicht mehr."
+  luetschinentaeler:
+    name: Lütschinentäler
+    region: bo_ost
+    axis: [[46.690, 7.860], [46.630, 7.900], [46.590, 7.910], [46.540, 7.900]]
+    side: nord
+    pass: grimsel
+    pass_valley: false
+    crest_m: 3200
+    long_valley: false
+    narrows: true
+    station: INT
+  kandertal:
+    name: Kandertal
+    region: bo_west
+    axis: [[46.690, 7.680], [46.590, 7.650], [46.490, 7.670]]
+    side: nord
+    pass: simplon
+    pass_valley: false
+    crest_m: 2800
+    long_valley: false
+    narrows: false
+    station: FRU
+    pumping: "Gemmi und Lötschenpass werden bei Alpinem Pumpen überspült, bei Südüberdruck nicht mehr."
+  simmental:
+    name: Simmental
+    region: bo_west
+    axis: [[46.670, 7.640], [46.630, 7.390], [46.550, 7.370], [46.460, 7.440]]
+    side: nord
+    pass: gsb
+    pass_valley: false
+    crest_m: 2400
+    long_valley: true
+    narrows: false
+    station: BOL
+    pumping: "Rawil und Sanetsch werden bei Alpinem Pumpen überspült, bei Südüberdruck nicht mehr."
+  linthtal:
+    name: Linthtal (Glarus)
+    region: glarus_linth
+    axis: [[47.100, 9.060], [47.040, 9.070], [46.990, 9.070], [46.920, 8.990]]
+    side: nord
+    pass: lukmanier
+    pass_valley: false
+    crest_m: 2700
+    long_valley: true
+    narrows: false
+    station: GLA
+  seeztal:
+    name: Walensee / Seeztal
+    region: glarus_linth
+    axis: [[47.130, 9.060], [47.120, 9.310], [47.050, 9.440]]
+    side: nord
+    pass: sanbernardino
+    pass_valley: false
+    crest_m: 2200
+    long_valley: false
+    narrows: true
+    station: QUI
+    channels: [west]
+  alpenrheintal:
+    name: Alpenrheintal
+    region: rheintal
+    axis: [[47.380, 9.550], [47.130, 9.520], [47.000, 9.500], [46.850, 9.530]]
+    side: nord
+    pass: sanbernardino
+    pass_valley: true
+    crest_m: 2400
+    long_valley: true
+    narrows: false
+    station: VAD
+  praettigau:
+    name: Prättigau
+    region: rheintal
+    axis: [[46.970, 9.560], [46.970, 9.680], [46.870, 9.880]]
+    side: nord
+    pass: maloja
+    pass_valley: false
+    crest_m: 2500
+    long_valley: false
+    narrows: true
+    station: SRS
+  surselva:
+    name: Surselva (Vorderrhein)
+    region: rheintal
+    axis: [[46.820, 9.410], [46.770, 9.200], [46.700, 8.850], [46.660, 8.670]]
+    side: nord
+    pass: lukmanier
+    pass_valley: true
+    crest_m: 2900
+    long_valley: true
+    narrows: false
+    station: DIS
+    pumping: "Die Pässe in die Surselva werden bei Alpinem Pumpen überspült, bei Südüberdruck nicht mehr."
+  hinterrhein:
+    name: Hinterrhein / Rheinwald
+    region: rheintal
+    axis: [[46.700, 9.440], [46.600, 9.430], [46.550, 9.320], [46.530, 9.200]]
+    side: nord
+    pass: sanbernardino
+    pass_valley: true
+    crest_m: 2900
+    long_valley: false
+    narrows: true
+    station: AND
+  rhonetal:
+    name: Rhonetal (Mittelwallis)
+    region: wallis
+    axis: [[46.100, 7.070], [46.230, 7.360], [46.290, 7.530], [46.290, 7.880]]
+    side: inneralpin
+    pass: simplon
+    pass_valley: false
+    crest_m: 3000
+    long_valley: true
+    narrows: true
+    station: SIO
+  goms:
+    name: Goms
+    region: wallis
+    axis: [[46.320, 7.990], [46.400, 8.130], [46.500, 8.310], [46.530, 8.350]]
+    side: inneralpin
+    pass: gotthard
+    pass_valley: true
+    crest_m: 3000
+    long_valley: true
+    narrows: false
+    station: ULR
+  vispertaeler:
+    name: Vispertäler
+    region: wallis
+    axis: [[46.290, 7.880], [46.230, 7.870], [46.020, 7.750]]
+    side: nord
+    pass: simplon
+    pass_valley: true
+    crest_m: 3800
+    long_valley: false
+    narrows: true
+    station: VIS
+  entremont:
+    name: Val d'Entremont
+    region: wallis
+    axis: [[46.100, 7.070], [46.030, 7.150], [45.950, 7.210]]
+    side: nord
+    pass: gsb
+    pass_valley: true
+    crest_m: 3000
+    long_valley: false
+    narrows: true
+    station: MOB
+  oberengadin:
+    name: Oberengadin
+    region: engadin
+    axis: [[46.700, 10.090], [46.530, 9.870], [46.460, 9.790], [46.400, 9.690]]
+    side: inneralpin
+    pass: maloja
+    pass_valley: true
+    crest_m: 3100
+    long_valley: true
+    narrows: false
+    station: SAM
+  leventina:
+    name: Leventina
+    region: tessin
+    axis: [[46.360, 8.970], [46.480, 8.800], [46.530, 8.610]]
+    side: sued
+    pass: gotthard
+    pass_valley: true
+    crest_m: 2700
+    long_valley: true
+    narrows: true
+    station: PIO
+  misox:
+    name: Misox (Mesolcina)
+    region: tessin
+    axis: [[46.240, 9.120], [46.390, 9.230], [46.460, 9.190]]
+    side: sued
+    pass: sanbernardino
+    pass_valley: true
+    crest_m: 2700
+    long_valley: false
+    narrows: true
+    station: GRO
+  vallemaggia:
+    name: Valle Maggia
+    region: tessin
+    axis: [[46.170, 8.790], [46.320, 8.600], [46.340, 8.610]]
+    side: sued
+    pass: simplon
+    pass_valley: false
+    crest_m: 2700
+    long_valley: true
+    narrows: false
+    station: CEV
