@@ -371,11 +371,9 @@ export async function drawMap(el, { lv, fill = true, onPick, label = (u) => unit
     return `<path class="m-cell ${fill ? `m-f-${l}` : "m-plain"}" d="${geo.cells[r]}" clip-path="url(#m-clip)" tabindex="0" role="button" data-u="${r}" aria-label="${esc(label(r))}: ${LEVEL[l].label}"><title>${esc(label(r))}: ${LEVEL[l].label}</title></path>`; }).join("");
   const vals = valleys.map((v) => { const l = lv(v);
     return `<path class="m-vring" d="${geo.valleys[v]}"/><path class="m-valley" stroke="${col(l)}" d="${geo.valleys[v]}" tabindex="0" role="button" data-u="${v}" aria-label="${esc(label(v))}: ${LEVEL[l].label}"><title>${esc(label(v))}: ${LEVEL[l].label}</title></path>`; }).join("");
-  const marks = regions.map((r) => { const l = lv(r); const [x, y] = proj(META.regions[r].center); const R = fill ? 9 : 12;
-    return `<g class="m-mark"><circle cx="${x}" cy="${y}" r="${R}" fill="${col(l)}"/><text x="${x}" y="${y + (fill ? 4 : 4.5)}" fill="${l === "achtung" ? "var(--on-warn)" : "#fff"}" font-size="${fill ? 11 : 13}">${LEVEL[l].sym}</text></g>`; }).join("");
   el.innerHTML = `<svg class="m-map" viewBox="0 0 ${MAPW} ${MAPH}" role="img" aria-label="Karte der Schweiz mit Regionen und Tälern">
     <defs><clipPath id="m-clip"><path d="${geo.ch}"/></clipPath><pattern id="m-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--land)"/><rect width="3" height="6" fill="var(--s-unsicher)"/></pattern></defs>
-    <path class="m-land" d="${geo.ch}"/>${cells}<path class="m-outline" d="${geo.ch}"/>${vals}${marks}</svg>`;
+    <path class="m-land" d="${geo.ch}"/>${cells}<path class="m-outline" d="${geo.ch}"/>${vals}</svg>`;
   el.querySelectorAll("[data-u]").forEach((n) => {
     n.addEventListener("click", () => onPick(n.dataset.u));
     n.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onPick(n.dataset.u); } });
