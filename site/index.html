@@ -2,33 +2,23 @@
 <html lang="de-CH">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>wingbrief</title>
 <meta name="description" content="Prognose-Check für Gleitschirm- und Deltapiloten nach der SHV-Meteo-Entscheidungsstrategie (Planung). Quelle: MeteoSchweiz.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="top">
-  <a class="brand" href="#/">wingbrief</a>
-  <nav class="mainnav" aria-label="Hauptnavigation">
-    <a href="#/" data-nav="home">Planung</a>
-    <a href="#/vor-ort" data-nav="vor-ort">Anreise &amp; Vor Ort</a>
-    <a href="#/info" data-nav="info">So funktioniert's</a>
-  </nav>
-</header>
-<div id="stale" class="banner warn" hidden></div>
-<p class="disclaimer">Entscheidungshilfe für die <strong>Planung</strong> nach der
-  <a href="https://www.shv-fsvl.ch/fileadmin/files/redakteure/Allgemein/Sicherheit/Sicherheit/Entscheidungsstrategie_Meteo_V10.pdf" target="_blank" rel="noopener">SHV-Meteo-Entscheidungsstrategie</a>.
-  Sie ersetzt die Beurteilung bei Anreise und vor Ort nicht. «Keine Alarmzeichen» ist keine Freigabe.</p>
-<main id="app" tabindex="-1"><p class="loading">Lade Prognose …</p></main>
-<footer class="foot">
-  <p class="entscheid" id="entscheid"></p>
-  <p>Quelle: MeteoSchweiz (ICON-CH2-EPS, Lokalprognose, SwissMetNet-Klimatologie). Modelllauf: <span id="run">–</span>.
-     Berechnet: <span id="generated">–</span>.</p>
-  <p>Kriterien: SHV-Plakat «Meteo-Entscheidungsstrategie» V10, Zeile Planung. Zahlen ohne SHV-Angabe sind als
-     «DHV» oder «eigener Vorschlag» gekennzeichnet. <a href="https://github.com/fabianboesiger/wingbrief" target="_blank" rel="noopener">Quellcode</a></p>
-</footer>
-<div id="tip" class="tip" role="status" hidden></div>
-<script type="module" src="app.js"></script>
+<div class="wrap">
+  <header><div class="brand">wingbrief</div><button class="iconbtn" id="info" aria-label="Info">i</button></header>
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <p class="stale" id="stale" hidden></p>
+  <div class="map" id="map"><p style="text-align:center;color:var(--ink-3)">Lade Prognose …</p></div>
+  <div class="legend1" id="legend"></div>
+  <p class="foot">Planung, keine Freigabe · Quelle: MeteoSchweiz</p>
+</div>
+<div id="tip" class="tip" hidden></div>
+<script type="module" src="main.js"></script>
 </body>
 </html>
