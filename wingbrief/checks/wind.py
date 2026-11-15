@@ -73,8 +73,8 @@ def U3(ctx: Ctx) -> Result:
         _, a, mv, gv = worst
         r.add(t, ALARM if mv >= mean_l or gv >= gust_l else NEUTRAL, f"{a}: Mittel {mv:.0f}, Böe {gv:.0f} km/h")
     for a, ((ts, vs), (tg, vg)) in series.items():
-        r.line(f"{a} Mittelwind", "km/h", ts, vs)
-        r.line(f"{a} Böen", "km/h", tg, vg, dashed=True)
+        r.line(f"{a} Mittelwind", "km/h", ts, vs, colorKey=a)
+        r.line(f"{a} Böen", "km/h", tg, vg, dashed=True, colorKey=a)
     r.threshold("Mittelwind", mean_l, "km/h")
     r.threshold("Böen", gust_l, "km/h")
     for a in stations:

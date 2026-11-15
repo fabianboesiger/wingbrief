@@ -1,0 +1,99 @@
+name: Prognose
+
+on:
+  schedule:
+    - cron: "17 * * * *"      # stündlich prüfen; neuer ICON-CH2-Lauf alle 6 h
+  push:
+    branches: [main]
+    paths: ["site/**", "wingbrief/**", "config/**", ".github/workflows/forecast.yml"]
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Lauf neu rechnen, auch wenn er schon verarbeitet ist"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: forecast
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    outputs:
+      result: ${{ steps.plan.outputs.result }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Daten-Branch holen (Archiv, Zustand, letzte Ausgabe)
+        run: |
+          if git ls-remote --exit-code --heads origin data >/dev/null; then
+            git fetch --depth=1 origin data
+            git worktree add databranch origin/data
+          else
+            git worktree add --detach databranch
+            cd databranch && git checkout --orphan data && git rm -rfq . && cd ..
+          fi
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -e .
+
+      - uses: actions/cache@v4
+        with:
+          path: cache/grid_*.npz
+          key: icon-grid-v1
+
+      - name: Prognose rechnen
+        id: plan
+        run: |
+          FORCE=""
+          if [ "${{ github.event_name }}" = "push" ] || [ "${{ inputs.force }}" = "true" ]; then FORCE="--force"; fi
+          # Bei Code-Änderungen ohne neuen Lauf genügt die letzte Ausgabe
+          if [ "${{ github.event_name }}" = "push" ] && [ -d databranch/latest ]; then
+            mkdir -p public && cp -r databranch/latest public/data
+            python -c "from pathlib import Path; from wingbrief import output; output.copy_site(Path('public'))"
+            echo "result=redeploy" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          RESULT=$(python -m wingbrief.main plan --out public --state databranch/state.json \
+                   --archive databranch/archive $FORCE | tail -n1)
+          echo "result=$RESULT" >> "$GITHUB_OUTPUT"
+
+      - name: Archiv und Zustand sichern
+        if: steps.plan.outputs.result == 'updated'
+        run: |
+          rm -rf databranch/latest && cp -r public/data databranch/latest
+          cd databranch
+          git config user.name "wingbrief-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -qm "Lauf $(python -c "import json;print(json.load(open('state.json'))['run'])")"
+          git push origin HEAD:data
+
+      - uses: actions/configure-pages@v5
+        if: steps.plan.outputs.result == 'updated' || steps.plan.outputs.result == 'redeploy'
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.plan.outputs.result == 'updated' || steps.plan.outputs.result == 'redeploy'
+        with:
+          path: public
+
+  deploy:
+    needs: build
+    if: needs.build.outputs.result == 'updated' || needs.build.outputs.result == 'redeploy'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
