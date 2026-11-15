@@ -34,7 +34,9 @@ GitHub Actions (stündlich, neuer Lauf alle 6 h)
   sonst *unsicher*. Näherungen heben höchstens auf *Achtung*, Rahmenbedingungen (Jahreszeit, Gelände) lösen allein
   nichts aus.
 - **Verkettung**: Anzahl Phänomene mit Alarmzeichen.
-- **Anreise und Vor Ort**: als statische Checkliste aus dem Plakat; diese Phasen brauchen Messungen und Beobachtungen.
+- **Anreise und Vor Ort**: als statische Checkliste aus dem Plakat (im Info-Panel); diese Phasen brauchen Messungen und Beobachtungen.
+- **Seite** (`site/`): erster Bildschirm nur Tages-Tabs, Ampelkarte und Legende. Ein Gebiet antippen öffnet ein Panel
+  mit Morgen/Mittag/Nachmittag und den fünf Phänomenen; weiter zu Begründung, Checks und Check-Detail mit Diagramm.
 
 ## Check-Katalog
 
