@@ -23,9 +23,12 @@ function wireTabs(root, rerender) {
     rerender();
   });
 }
-function topbar(backHref, backLabel) {
-  return `<div class="topbar"><a class="back" href="${backHref}"><span>‹</span>${esc(backLabel)}</a>
-    <a class="minilogo" href="#" aria-label="wingbrief Startseite">${LOGO.replace(/LG/g, "LGs")}</a></div>`;
+function header(active = "") {
+  return `<header class="site-head"><a class="brand" href="#" aria-label="wingbrief, zur Karte">${LOGO}<span class="wm">wing<b>brief</b></span></a>
+    <a class="iconbtn${active === "info" ? " on" : ""}" href="#info" aria-label="Über wingbrief">i</a></header>`;
+}
+function topbar(backHref, backLabel, active = "") {
+  return `${header(active)}<a class="back" href="${backHref}"><span>‹</span>${esc(backLabel)}</a>`;
 }
 function setPage(title, html) {
   document.title = title ? `${title} – wingbrief` : "wingbrief";
@@ -46,8 +49,7 @@ function wireRows(root) {
 
 // ------------------------------------------------------------- Seiten
 function pageHome() {
-  setPage("", `<header><div class="brand" aria-label="wingbrief">${LOGO}<span class="wm">wing<b>brief</b></span></div>
-      <a class="iconbtn" href="#info" aria-label="Info" style="text-decoration:none">i</a></header>
+  setPage("", `${header()}
     ${tabsHtml()}<p class="stale" id="stale" hidden></p>
     <div class="map" id="map"></div><div class="legend1">${W.legendHtml()}</div>
     <p class="foot">Planung, keine Freigabe · Quelle: MeteoSchweiz</p>`);
@@ -133,7 +135,7 @@ function pageCheck(uid, cid) {
 function pageInfo() {
   const cat = W.META.catalog;
   const n = (d) => Object.values(cat.checks).filter((c) => c.data === d).length;
-  setPage("Über wingbrief", `${topbar("#", "Karte")}<h1 class="page-title" tabindex="-1">Über wingbrief</h1>
+  setPage("Über wingbrief", `${topbar("#", "Karte", "info")}<h1 class="page-title" tabindex="-1">Über wingbrief</h1>
     <section class="card prose"><p>wingbrief prüft die Zeile <b>Planung</b> der <a href="${POSTER}" target="_blank" rel="noopener">SHV-Meteo-Entscheidungsstrategie</a>
       mit Prognosedaten von MeteoSchweiz, für heute und die nächsten 4 Tage.</p>
       <p>Farbe auf der Karte = schlechtestes der fünf Phänomene am gewählten Tag. Flächen sind Regionen, Linien Täler.</p></section>
@@ -153,7 +155,7 @@ function pageVorOrt() {
   const block = (title, rows) => `<section class="card poster"><h2>${title}</h2>${W.PH.map((ph) =>
     `<h4>${W.icon(ph, "ic ic-inline")} ${esc(W.phName(ph))}</h4><ul>${(rows[ph] || []).map((r) => r.guenstig
       ? `<li><b>Günstig:</b> ${esc(r.guenstig)}</li>` : `<li>${esc(r.check)} → <span class="al">${esc(r.alarm)}</span></li>`).join("")}</ul>`).join("")}</section>`;
-  setPage("Anreise & Vor Ort", `${topbar("#info", "Über wingbrief")}<h1 class="page-title" tabindex="-1">Anreise &amp; Vor Ort</h1>
+  setPage("Anreise & Vor Ort", `${topbar("#info", "Über wingbrief", "info")}<h1 class="page-title" tabindex="-1">Anreise &amp; Vor Ort</h1>
     <p class="page-sub">Diese Punkte des SHV-Plakats prüfst du mit aktuellen Messungen und eigenen Beobachtungen.</p>
     ${block("Anreise / Bergfahrt", P.anreise)}${block("Vor Ort / im Flug", P.vor_ort)}
     <section class="card poster"><h2>Gelände und Mensch</h2><ul>${[...P.gelaende_mensch.planung, ...P.gelaende_mensch.vor_ort].map((x) => `<li>${esc(x)}</li>`).join("")}</ul></section>`);

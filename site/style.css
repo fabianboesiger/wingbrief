@@ -176,17 +176,19 @@ body { background: var(--band) no-repeat, var(--bg); background-size: 100% 300px
 .tabs button { font:500 15px var(--font-disp); letter-spacing:-.01em; border-bottom-width: 3px; }
 .tabs button[aria-selected="true"] { border-bottom-color: var(--accent); }
 .map { background: var(--surface); border-radius: 28px; box-shadow: 0 10px 30px var(--shadow); }
-.iconbtn { background: var(--surface); }
+.iconbtn { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--surface);
+  color: var(--ink); font: 600 17px/1 var(--font-disp); text-decoration: none; cursor: pointer; box-shadow: 0 1px 4px var(--shadow); flex: none; }
+.iconbtn:hover, .iconbtn.on { background: var(--ink); color: var(--surface); }
+.iconbtn:focus-visible, .brand:focus-visible, .back:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.site-head { min-height: 44px; }
+a.brand { color: var(--ink); text-decoration: none; }
 .pill.st-ok, .cd-links a, .linkbtn { color: inherit; }
 .cd-links a, .linkbtn, .cd a, .poster a { color: var(--accent); }
 
 /* Unterseiten */
-.topbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 40px; }
-.back { display: inline-flex; align-items: center; gap: 4px; color: var(--ink-2); text-decoration: none; font: 500 15px var(--font-disp); padding: 6px 8px 6px 0; }
+.back { justify-self: start; margin-bottom: -6px; display: inline-flex; align-items: center; gap: 4px; color: var(--ink-2); text-decoration: none; font: 500 15px var(--font-disp); padding: 6px 8px 6px 0; }
 .back:hover { color: var(--ink); }
 .back span { font-size: 22px; line-height: 1; margin-top: -2px; }
-.minilogo { display: inline-flex; border-radius: 7px; overflow: hidden; width: 26px; height: 26px; }
-.minilogo svg { width: 26px; height: 26px; }
 .page-title { font: 800 clamp(26px, 6vw, 34px)/1.1 var(--font-disp); letter-spacing: -.03em; margin: 2px 0 0; text-wrap: balance; }
 .page-title:focus { outline: none; }
 .page-sub { margin: 4px 0 0; color: var(--ink-2); font-size: 14px; }
