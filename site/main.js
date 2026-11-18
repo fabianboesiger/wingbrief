@@ -40,7 +40,7 @@ const lvOf = (u, ph = null) => (sec === "tag" ? W.dayLevel(u, day, ph) : (ph ? W
 const statusBig = (lv) => `<div class="status-big"><span class="lv ${lv}">${W.LEVEL[lv].sym}</span>${W.LEVEL[lv].label}</div>`;
 const whenText = () => { const p = W.dayParts(day); return `${p.rel}${p.i > 1 ? ` ${p.date}` : ""} · ${W.secLabel(sec)}`; };
 function row(href, lv, title, sub, st = null) {
-  const mark = st ? `<span class="lv st-${st}">${W.STATUS[st]?.sym ?? ""}</span>` : `<span class="lv ${lv}">${W.LEVEL[lv].sym}</span>`;
+  const mark = st ? `<span class="lv st-${st.cls}">${st.sym}</span>` : `<span class="lv ${lv}">${W.LEVEL[lv].sym}</span>`;
   return `<li><button data-go="${href}">${mark}<span><b>${title}</b><small>${esc(sub)}</small></span><span class="chev">›</span></button></li>`;
 }
 function wireRows(root) {
@@ -108,7 +108,8 @@ function pagePhenomenon(uid, ph) {
         return `<section class="card"><h2>${title}</h2><ul class="sv-list">${ids.map((cid) => {
           const c = W.META.catalog.checks[cid];
           const [st, val] = W.checkStatus(owner, day, sec, cid);
-          return row(`${slug(uid)}-${cid}`, null, esc(c.shv.split("→")[0].trim()), val || W.STATUS[st]?.label, st);
+          const m = W.checkMark(cid, st);
+          return row(`${slug(uid)}-${cid}`, null, esc(c.shv.split("→")[0].trim()), W.readableHint(val) || m.label, m);
         }).join("")}</ul></section>`;
       }).join("");
   }
