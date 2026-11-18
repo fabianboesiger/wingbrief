@@ -138,21 +138,43 @@ export function reason(uid, d, s, ph) {
   return { lv, cid: null, owner, text: "" };
 }
 
+/** Check-Status mit den Ampel-Icons darstellen: { cls, sym, label }. */
+export function checkMark(cid, st) {
+  const kind = META.catalog.checks[cid]?.kind;
+  const L = (lv, label) => ({ cls: lv, sym: LEVEL[lv].sym, label });
+  if (st === "selbst_pruefen") return { cls: "selbst_pruefen", sym: STATUS.selbst_pruefen.sym, label: STATUS.selbst_pruefen.label };
+  if (st === "keine_daten" || !st) return L("keine_daten", "keine Daten");
+  if (st === "alarm" || st === "achtung" || st === "unsicher") return L(st, LEVEL[st].label);
+  if (kind === "guenstig") return st === "guenstig" ? L("ok", "erfüllt") : L("achtung", "nicht erfüllt");
+  if (kind === "faktor") return st === "trifft_zu" ? L("achtung", "trifft zu") : L("ok", "trifft nicht zu");
+  return L("ok", "kein Alarmzeichen");
+}
+
+/** «Modell-Hinweis: F2, F6» → «Hinweis aus dem Modell: Niederschlagsprognose, Temperaturprognose». */
+export function readableHint(text) {
+  if (!text || !text.startsWith("Modell-Hinweis:")) return text;
+  const names = text.replace("Modell-Hinweis:", "").split(",").map((x) => x.trim())
+    .map((id) => META.catalog.checks[id]?.shv.split("→")[0].trim() || id);
+  return "Hinweis aus dem Modell: " + names.join(", ");
+}
+
 // ------------------------------------------------------------ Check-Detail (gemeinsam)
 export function checkDetailHtml(uid, cid, d, s) {
   const c = META.catalog.checks[cid];
   const owner = ownerOf(uid, c.phenomenon);
-  const [st, val, ens] = checkStatus(owner, d, s, cid);
+  const [st, rawVal, ens] = checkStatus(owner, d, s, cid);
+  const val = readableHint(rawVal);
+  const mk = checkMark(cid, st);
   const thr = Object.entries(c.thresholds || {}).map(([k, t]) =>
     `<tr><td>${esc(thrLabel(k))}</td><td class="num">${t.value}</td><td>${esc(t.source)}</td></tr>`).join("");
   const links = (c.links || []).map((l) => META.catalog.links[l]).filter(Boolean)
     .map((l) => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join(" ");
   const strip = dayKeys().map((dd) => `<div class="cd-day"><span>${dayParts(dd).rel}</span><div>${SECS.map((x) => {
-    const sx = checkStatus(owner, dd, x, cid)[0];
-    return `<i class="st-${sx}${dd === d && (x === s || s === "tag") ? " sel" : ""}" title="${secLabel(x)}: ${STATUS[sx]?.label}">${STATUS[sx]?.sym ?? ""}</i>`;
+    const m = checkMark(cid, checkStatus(owner, dd, x, cid)[0]);
+    return `<i class="st-${m.cls}${dd === d && (x === s || s === "tag") ? " sel" : ""}" title="${secLabel(x)}: ${m.label}">${m.sym}</i>`;
   }).join("")}</div></div>`).join("");
   return `<div class="cd">
-    <div class="cd-head"><span class="cd-id">${cid}</span><span class="pill st-${st}">${STATUS[st]?.sym} ${STATUS[st]?.label}</span></div>
+    <div class="cd-head"><span class="cd-id">${cid}</span><span class="pill st-${mk.cls}">${mk.sym} ${mk.label}</span></div>
     <p class="cd-value">${esc(val) || "kein Wert"}${ens ? `<br><small>Ensemble: ${Math.round(ens[0] * 100)} % der Members mit Alarm</small>` : ""}</p>
     <div class="cd-strip">${strip}</div>
     <blockquote class="cd-shv"><small>SHV-Plakat · Planung · ${c.stage === "fortgeschritten" ? "Fortgeschritten" : "Basis"} · ${KIND[c.kind]}</small>${esc(c.shv)}</blockquote>
@@ -193,7 +215,7 @@ export async function fillCheckDetail(root, uid, cid, d, s) {
   const x0 = new Date(Math.min(run.getTime(), today0.getTime()) - (cid === "R6" ? 86400000 : 0));
   renderCharts(ch, x.series, { x0, x1: new Date(run.getTime() + 120 * 3600000), band: band(d, s) });
   raw.innerHTML = `<table><tr><th>Zeit</th><th>Status</th><th>Wert</th></tr>${x.entries.map((e) =>
-    `<tr><td>${fmtDateTime(e[0])}</td><td>${STATUS[e[1]]?.label ?? e[1]}${e[3] ? " (Ens.)" : ""}</td><td>${esc(e[2])}</td></tr>`).join("")}</table>`;
+    `<tr><td>${fmtDateTime(e[0])}</td><td>${checkMark(cid, e[1]).label}${e[3] ? " (Ens.)" : ""}</td><td>${esc(e[2])}</td></tr>`).join("")}</table>`;
 }
 
 function band(d, s) {

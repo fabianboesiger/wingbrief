@@ -41,12 +41,9 @@ header { display: flex; justify-content: space-between; align-items: center; }
 .lv.achtung, .st-achtung { background: var(--s-achtung); color: var(--on-warn); }
 .lv.achtung { border-radius: 5px; }
 .lv.unsicher, .st-unsicher { background: var(--s-unsicher); color: #fff; }
-.lv.ok, .st-ok, .st-guenstig { background: var(--s-ok); color: #fff; }
+.lv.ok, .st-ok { background: var(--s-ok); color: #fff; }
 .lv.keine_daten, .st-keine_daten { background: var(--s-keine); color: var(--ink-2); }
-.st-neutral { background: transparent; color: var(--ink-3); box-shadow: inset 0 0 0 1.5px var(--ink-3); }
 .st-selbst_pruefen { background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent); font-weight: 700; }
-.st-trifft_zu { background: var(--ink-2); color: var(--surface); }
-.st-trifft_nicht_zu { background: transparent; color: var(--ink-3); box-shadow: inset 0 0 0 1.5px var(--line); }
 .ic { width: 18px; height: 18px; flex: none; }
 
 /* Check-Detail */
